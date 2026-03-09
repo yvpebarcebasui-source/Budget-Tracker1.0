@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Budget Tracker</title>
+<link rel="icon" type="image/png" href="budget.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+font-family:Arial, sans-serif;
+background:#3eb4c2;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:white;
+padding:25px;
+border-radius:10px;
+width:300px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+h2{
+margin-bottom:15px;
+}
+
+input{
+width:90%;
+padding:10px;
+margin:6px 0;
+border:1px solid #ccc;
+border-radius:6px;
+text-align:center;
+}
+
+button{
+width:95%;
+padding:10px;
+margin-top:6px;
+border:none;
+background:#2352b6;
+color:white;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#183f8c;
+}
+
+.summary{
+margin-top:15px;
+font-size:14px;
+}
+
+#list{
+margin-top:10px;
+text-align:left;
+font-size:14px;
+}
+
+.expense{
+display:flex;
+justify-content:space-between;
+margin:4px 0;
+}
+
+.delete{
+background:red;
+color:white;
+border:none;
+padding:3px 6px;
+border-radius:4px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Budget Tracker</h2>
+
+<form id="budgetForm">
+<input id="budgetInput" type="number" placeholder="Add Budget">
+<button type="submit">Add Budget</button>
+</form>
+
+<input id="expenseName" placeholder="Expense name">
+<input id="expenseCost" type="number" placeholder="Expense cost">
+<button id="addExpense">Add Expense</button>
+
+<div class="summary">
+<p><b>Total Budget:</b> ₱ <span id="totalBudget">0</span></p>
+<p><b>Total Expenses:</b> ₱ <span id="totalExpense">0</span></p>
+<p><b>Remaining:</b> ₱ <span id="remaining">0</span></p>
+</div>
+
+<div id="list"></div>
+
+</div>
+
+<script>
+
+let budget = 0;
+let expenses = [];
+
+const budgetInput = document.getElementById("budgetInput");
+const expenseName = document.getElementById("expenseName");
+const expenseCost = document.getElementById("expenseCost");
+
+const totalBudget = document.getElementById("totalBudget");
+const totalExpense = document.getElementById("totalExpense");
+const remaining = document.getElementById("remaining");
+
+const list = document.getElementById("list");
+
+document.getElementById("budgetForm").onsubmit = function(e){
+
+e.preventDefault();
+
+budget += Number(budgetInput.value);
+budgetInput.value="";
+
+update();
+
+};
+
+document.getElementById("addExpense").onclick = function(){
+
+if(expenseName.value && expenseCost.value){
+
+expenses.push({
+name: expenseName.value,
+cost: Number(expenseCost.value)
+});
+
+expenseName.value="";
+expenseCost.value="";
+
+update();
+
+}
+
+};
+
+function deleteExpense(index){
+
+expenses.splice(index,1);
+update();
+
+}
+
+function update(){
+
+let total = expenses.reduce((sum,e)=>sum+e.cost,0);
+let remain = budget-total;
+
+totalBudget.textContent = budget;
+totalExpense.textContent = total;
+remaining.textContent = remain;
+
+list.innerHTML = expenses.map((e,i)=>
+
+`<div class="expense">
+<span>${e.name} - ₱${e.cost}</span>
+<button class="delete" onclick="deleteExpense(${i})">X</button>
+</div>`
+
+).join("");
+
+}
+
+</script>
+
+</body>
+</html>
