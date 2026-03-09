@@ -113,8 +113,8 @@ cursor:pointer;
 
 <script>
 
-let budget = 0;
-let expenses = [];
+let budget = Number(localStorage.getItem("budget")) || 0;
+let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
 
 const budgetInput = document.getElementById("budgetInput");
 const expenseName = document.getElementById("expenseName");
@@ -133,6 +133,7 @@ e.preventDefault();
 budget += Number(budgetInput.value);
 budgetInput.value="";
 
+saveData();
 update();
 
 };
@@ -149,6 +150,7 @@ cost: Number(expenseCost.value)
 expenseName.value="";
 expenseCost.value="";
 
+saveData();
 update();
 
 }
@@ -158,8 +160,14 @@ update();
 function deleteExpense(index){
 
 expenses.splice(index,1);
+saveData();
 update();
 
+}
+
+function saveData(){
+localStorage.setItem("budget", budget);
+localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
 function update(){
@@ -182,7 +190,10 @@ list.innerHTML = expenses.map((e,i)=>
 
 }
 
+update();
+
 </script>
 
 </body>
+
 </html>
